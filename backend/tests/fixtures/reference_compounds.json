@@ -1,0 +1,42 @@
+[
+  {
+    "name_cn": "白藜芦醇",
+    "name_en": "Resveratrol",
+    "cas": "501-36-0",
+    "smiles": "C1=CC(=CC=C1/C=C/C2=CC(=C(C=C2)O)O)O",
+    "canonical_smiles": "C1=CC(=CC=C1/C=C/C2=CC(=C(C=C2)O)O)O",
+    "fingerprint_version": "morgan-r2-b2048-v1"
+  },
+  {
+    "name_cn": "槲皮素",
+    "name_en": "Quercetin",
+    "cas": "117-39-5",
+    "smiles": "C1=CC(=C(C=C1C2=C(C(=O)C3=C(O2)C=C(C=C3O)O)O)O)O",
+    "canonical_smiles": "C1=CC(=C(C=C1C2=C(C(=O)C3=C(O2)C=C(C=C3O)O)O)O)O",
+    "fingerprint_version": "morgan-r2-b2048-v1"
+  },
+  {
+    "name_cn": "姜黄素",
+    "name_en": "Curcumin",
+    "cas": "458-37-7",
+    "smiles": "COC1=CC(=CC(=C1O)OC)/C=C/C(=O)CC(=O)/C=C/C2=CC(=CC(=C2)OC)O",
+    "canonical_smiles": "COC1=CC(=CC(=C1O)OC)/C=C/C(=O)CC(=O)/C=C/C2=CC(=CC(=C2)OC)O",
+    "fingerprint_version": "morgan-r2-b2048-v1"
+  },
+  {
+    "name_cn": "小檗碱",
+    "name_en": "Berberine",
+    "cas": "2086-83-1",
+    "smiles": "COC1=CC2=C(C=C1OC)[N+]3=CC4=C(C=C3)OCO4CC2",
+    "canonical_smiles": "COC1=CC2=C(C=C1OC)[N+]3=CC4=C(C=C3)OCO4CC2",
+    "fingerprint_version": "morgan-r2-b2048-v1"
+  },
+  {
+    "name_cn": "表没食子儿茶素没食子酸酯",
+    "name_en": "Epigallocatechin Gallate",
+    "cas": "989-51-5",
+    "smiles": "C1C(C(OC2=C1C(=CC(=C2O)O)O)C3=CC(=C(C(=C3)O)O)O)OC(=O)C4=CC(=C(C(=C4)O)O)O",
+    "canonical_smiles": "C1C(C(OC2=C1C(=CC(=C2O)O)O)C3=CC(=C(C(=C3)O)O)O)OC(=O)C4=CC(=C(C(=C4)O)O)O",
+    "fingerprint_version": "morgan-r2-b2048-v1"
+  }
+]
