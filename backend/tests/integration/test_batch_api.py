@@ -15,7 +15,7 @@ def test_batch_submit_and_status_and_download() -> None:
     response = client.post(
         "/api/v1/batch/submit",
         files={"file": ("batch.csv", "smiles\nCCO\nCCC\n", "text/csv")},
-        data={"options": "{}"},
+        data={"options": '{"priority":"high"}'},
     )
 
     assert response.status_code == 200
@@ -41,6 +41,28 @@ def test_batch_submit_and_status_and_download() -> None:
     assert "smiles,status" in content
     assert "CCO,completed" in content
     assert "CCC,completed" in content
+
+
+def test_batch_submit_invalid_options() -> None:
+    response = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": "not-json"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "BATCH_FILE_INVALID"
+
+
+def test_batch_submit_non_object_options() -> None:
+    response = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": "[]"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "BATCH_FILE_INVALID"
 
 
 def test_batch_status_not_found() -> None:

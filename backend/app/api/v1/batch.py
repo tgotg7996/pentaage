@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 
@@ -19,10 +21,16 @@ async def batch_submit(
     file: UploadFile = File(...),
     options: str = Form("{}"),
 ) -> BatchSubmitResponse:
-    _ = options
+    try:
+        options_payload = json.loads(options)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail="BATCH_FILE_INVALID") from exc
+    if not isinstance(options_payload, dict):
+        raise HTTPException(status_code=400, detail="BATCH_FILE_INVALID")
+
     content = await file.read()
     csv_text = content.decode("utf-8")
-    return submit_batch(csv_text)
+    return submit_batch(csv_text, options=options_payload)
 
 
 @router.get("/{job_id}/status")

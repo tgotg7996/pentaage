@@ -11,12 +11,13 @@ class BatchJobRecord:
     status: str
     total_count: int
     csv_content: str
+    options: dict[str, object]
 
 
 _BATCH_JOBS: dict[str, BatchJobRecord] = {}
 
 
-def submit_batch(csv_text: str) -> BatchSubmitResponse:
+def submit_batch(csv_text: str, options: dict[str, object] | None = None) -> BatchSubmitResponse:
     lines = [line for line in csv_text.splitlines() if line.strip()]
     total_count = max(len(lines) - 1, 0)
     job_id = str(uuid.uuid4())
@@ -24,6 +25,7 @@ def submit_batch(csv_text: str) -> BatchSubmitResponse:
         status="completed",
         total_count=total_count,
         csv_content=csv_text,
+        options=options or {},
     )
     return BatchSubmitResponse(
         job_id=job_id,
