@@ -1,2 +1,57 @@
-def test_placeholder() -> None:
-    assert True
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from fastapi.testclient import TestClient
+
+from app.main import app
+
+
+client = TestClient(app)
+
+
+def test_batch_submit_and_status_and_download() -> None:
+    response = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\nCCC\n", "text/csv")},
+        data={"options": "{}"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["job_id"]
+    assert payload["status"] == "completed"
+    assert payload["total_count"] == 2
+
+    job_id = payload["job_id"]
+    status_response = client.get(f"/api/v1/batch/{job_id}/status")
+    assert status_response.status_code == 200
+    status_payload = status_response.json()
+    assert status_payload["job_id"] == job_id
+    assert status_payload["status"] == "completed"
+    assert status_payload["progress"]["total"] == 2
+    assert status_payload["progress"]["success"] == 2
+    assert status_payload["progress"]["failed"] == 0
+
+    download_response = client.get(f"/api/v1/batch/{job_id}/download")
+    assert download_response.status_code == 200
+    assert "text/csv" in download_response.headers.get("content-type", "")
+    content = download_response.text
+    assert "smiles,status" in content
+    assert "CCO,completed" in content
+    assert "CCC,completed" in content
+
+
+def test_batch_status_not_found() -> None:
+    response = client.get("/api/v1/batch/not-found/status")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "JOB_NOT_FOUND"
+
+
+def test_batch_download_not_found() -> None:
+    response = client.get("/api/v1/batch/not-found/download")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "JOB_NOT_FOUND"
