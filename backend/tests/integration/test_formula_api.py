@@ -44,9 +44,24 @@ def test_formulas_analyze_unresolved_ingredient() -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["success"] is True
-    assert payload["data"] is not None
-    assert payload["data"]["component_scores"][0]["resolved"] is False
-    assert payload["data"]["component_scores"][0]["total_score"] == 0
-    assert len(payload["data"]["unresolved_ingredients"]) == 1
-    assert payload["data"]["total_score"] == 0
+    assert payload["success"] is False
+    assert payload["data"] is None
+    assert payload["error"] is not None
+    assert payload["error"]["code"] == "ALL_UNRESOLVED"
+
+
+def test_formulas_analyze_empty_ingredients() -> None:
+    response = client.post(
+        "/api/v1/formulas/analyze",
+        json={
+            "formula_name": "demo",
+            "ingredients": [],
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["success"] is False
+    assert payload["data"] is None
+    assert payload["error"] is not None
+    assert payload["error"]["code"] == "EMPTY_INGREDIENTS"

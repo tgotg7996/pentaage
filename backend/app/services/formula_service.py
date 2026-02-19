@@ -8,6 +8,9 @@ from ..schemas.formula import (
 
 
 def analyze_formula(request: FormulaAnalyzeRequest) -> FormulaAnalyzeResponse:
+    if not request.ingredients:
+        raise ValueError("EMPTY_INGREDIENTS")
+
     component_scores: list[FormulaComponentScore] = []
     unresolved_ingredients: list[str] = []
 
@@ -27,6 +30,9 @@ def analyze_formula(request: FormulaAnalyzeRequest) -> FormulaAnalyzeResponse:
 
     synergy_bonus = max(len(component_scores) - 1, 0) * 5
     total_score = sum(item.total_score for item in component_scores) + synergy_bonus
+
+    if component_scores and len(unresolved_ingredients) == len(component_scores):
+        raise ValueError("ALL_UNRESOLVED")
 
     return FormulaAnalyzeResponse(
         total_score=total_score,
