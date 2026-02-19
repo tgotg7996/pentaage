@@ -18,7 +18,7 @@ def test_batch_submit_and_status_and_download() -> None:
         data={"options": '{"priority":"high"}'},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 202
     payload = response.json()
     assert payload["job_id"]
     assert payload["status"] == "completed"

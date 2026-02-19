@@ -16,7 +16,7 @@ from ...services.batch_service import (
 router = APIRouter(prefix="/batch", tags=["batch"])
 
 
-@router.post("/submit")
+@router.post("/submit", status_code=202)
 async def batch_submit(
     file: UploadFile = File(...),
     options: str = Form("{}"),
