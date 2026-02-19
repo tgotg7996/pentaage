@@ -65,6 +65,44 @@ def test_batch_submit_non_object_options() -> None:
     assert response.json()["detail"] == "BATCH_FILE_INVALID"
 
 
+def test_batch_submit_idempotency_same_key_same_payload() -> None:
+    headers = {"Idempotency-Key": "idem-key-1"}
+    payload = {
+        "files": {"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        "data": {"options": '{"priority":"high"}'},
+        "headers": headers,
+    }
+
+    first = client.post("/api/v1/batch/submit", **payload)
+    second = client.post("/api/v1/batch/submit", **payload)
+
+    assert first.status_code == 202
+    assert second.status_code == 202
+    first_payload = first.json()
+    second_payload = second.json()
+    assert first_payload["job_id"] == second_payload["job_id"]
+
+
+def test_batch_submit_idempotency_conflict() -> None:
+    headers = {"Idempotency-Key": "idem-key-2"}
+    first = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": '{"priority":"high"}'},
+        headers=headers,
+    )
+    second = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCCC\n", "text/csv")},
+        data={"options": '{"priority":"high"}'},
+        headers=headers,
+    )
+
+    assert first.status_code == 202
+    assert second.status_code == 409
+    assert second.json()["detail"] == "IDEMPOTENCY_CONFLICT"
+
+
 def test_batch_status_not_found() -> None:
     response = client.get("/api/v1/batch/not-found/status")
 

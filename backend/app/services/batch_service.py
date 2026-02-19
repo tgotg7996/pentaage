@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import uuid
 from dataclasses import dataclass
 
@@ -15,9 +17,36 @@ class BatchJobRecord:
 
 
 _BATCH_JOBS: dict[str, BatchJobRecord] = {}
+_BATCH_IDEMPOTENCY: dict[str, tuple[str, str]] = {}
 
 
-def submit_batch(csv_text: str, options: dict[str, object] | None = None) -> BatchSubmitResponse:
+def _build_payload_hash(csv_text: str, options: dict[str, object]) -> str:
+    options_text = json.dumps(options, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    payload = f"{csv_text}\n{options_text}".encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def submit_batch(
+    csv_text: str,
+    options: dict[str, object] | None = None,
+    idempotency_key: str | None = None,
+) -> BatchSubmitResponse:
+    normalized_options = options or {}
+    payload_hash = _build_payload_hash(csv_text, normalized_options)
+
+    if idempotency_key:
+        hit = _BATCH_IDEMPOTENCY.get(idempotency_key)
+        if hit is not None:
+            existing_hash, existing_job_id = hit
+            if existing_hash != payload_hash:
+                raise ValueError("IDEMPOTENCY_CONFLICT")
+            record = _BATCH_JOBS[existing_job_id]
+            return BatchSubmitResponse(
+                job_id=existing_job_id,
+                status=record.status,
+                total_count=record.total_count,
+            )
+
     lines = [line for line in csv_text.splitlines() if line.strip()]
     total_count = max(len(lines) - 1, 0)
     job_id = str(uuid.uuid4())
@@ -25,8 +54,12 @@ def submit_batch(csv_text: str, options: dict[str, object] | None = None) -> Bat
         status="completed",
         total_count=total_count,
         csv_content=csv_text,
-        options=options or {},
+        options=normalized_options,
     )
+
+    if idempotency_key:
+        _BATCH_IDEMPOTENCY[idempotency_key] = (payload_hash, job_id)
+
     return BatchSubmitResponse(
         job_id=job_id,
         status="completed",
