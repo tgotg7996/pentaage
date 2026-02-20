@@ -25,8 +25,12 @@ export default function BatchTask() {
           return;
         }
         setStatus(data);
-        if (data.status !== "completed") {
+        if (data.status === "pending" || data.status === "running") {
           timer = window.setTimeout(poll, 3000);
+          return;
+        }
+        if (data.status === "failed") {
+          setError("批量任务执行失败，请稍后重试或检查输入数据");
         }
       } catch {
         if (!stopped) {
@@ -101,6 +105,7 @@ export default function BatchTask() {
               </a>
             </p>
           ) : null}
+          {status?.status === "failed" ? <p style={{ color: "#b91c1c" }}>任务执行失败</p> : null}
         </div>
       ) : null}
     </section>
