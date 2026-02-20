@@ -103,6 +103,45 @@ def test_batch_submit_idempotency_conflict() -> None:
     assert second.json()["detail"] == "IDEMPOTENCY_CONFLICT"
 
 
+def test_batch_submit_idempotency_same_payload_different_option_order() -> None:
+    headers = {"Idempotency-Key": "idem-key-3"}
+    first = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": '{"b":2,"a":1}'},
+        headers=headers,
+    )
+    second = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": '{"a":1,"b":2}'},
+        headers=headers,
+    )
+
+    assert first.status_code == 202
+    assert second.status_code == 202
+    assert first.json()["job_id"] == second.json()["job_id"]
+
+
+def test_batch_submit_idempotency_key_trimmed() -> None:
+    first = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": "{}"},
+        headers={"Idempotency-Key": "idem-key-4"},
+    )
+    second = client.post(
+        "/api/v1/batch/submit",
+        files={"file": ("batch.csv", "smiles\nCCO\n", "text/csv")},
+        data={"options": "{}"},
+        headers={"Idempotency-Key": " idem-key-4 "},
+    )
+
+    assert first.status_code == 202
+    assert second.status_code == 202
+    assert first.json()["job_id"] == second.json()["job_id"]
+
+
 def test_batch_status_not_found() -> None:
     response = client.get("/api/v1/batch/not-found/status")
 
