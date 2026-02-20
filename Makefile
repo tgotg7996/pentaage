@@ -1,5 +1,7 @@
 .PHONY: init dev test lint
 
+PYTHON ?= python
+
 init:
 	@if [ -d frontend ]; then \
 		npm --prefix frontend install; \
@@ -13,7 +15,9 @@ dev:
 	@python -m uvicorn app.main:app --reload --port 8000 --app-dir backend & npm --prefix frontend run dev -- --host 0.0.0.0 --port 5173
 
 test:
-	@python -m pytest backend/tests
+	@$(PYTHON) -c "import pytest" >/dev/null 2>&1 || (echo "Missing pytest. Run: make init" && exit 1)
+	@$(PYTHON) -m pytest backend/tests
 
 lint:
-	@python -m ruff check backend && npm --prefix frontend run build
+	@$(PYTHON) -c "import ruff" >/dev/null 2>&1 || (echo "Missing ruff. Run: make init" && exit 1)
+	@$(PYTHON) -m ruff check backend && npm --prefix frontend run build
