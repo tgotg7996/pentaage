@@ -3,8 +3,10 @@ from __future__ import annotations
 import time
 import uuid
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
+from ...dependencies import get_db
 from ...schemas.common import ApiError, ApiResponse
 from ...schemas.formula import FormulaAnalyzeRequest, FormulaAnalyzeResponse
 from ...services.formula_service import analyze_formula
@@ -16,11 +18,12 @@ router = APIRouter(prefix="/formulas", tags=["formulas"])
 @router.post("/analyze")
 def formulas_analyze(
     request: FormulaAnalyzeRequest,
+    db: Session | None = Depends(get_db),
 ) -> ApiResponse[FormulaAnalyzeResponse]:
     start = time.perf_counter()
     request_id = str(uuid.uuid4())
     try:
-        data = analyze_formula(request)
+        data = analyze_formula(request, db=db)
         processing_time_ms = int((time.perf_counter() - start) * 1000)
         return ApiResponse(
             success=True,

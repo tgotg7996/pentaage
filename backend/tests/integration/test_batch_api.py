@@ -1,4 +1,5 @@
 from pathlib import Path
+import importlib
 import sys
 import time
 from types import SimpleNamespace
@@ -7,12 +8,16 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from fastapi.testclient import TestClient
-
 from app.main import app
 
 
-client = TestClient(app)
+def _create_test_client():
+    module = importlib.import_module("fastapi.testclient")
+    test_client_cls = getattr(module, "TestClient")
+    return test_client_cls(app)
+
+
+client = _create_test_client()
 
 
 def _wait_for_completed(job_id: str, timeout_seconds: float = 2.0) -> dict[str, Any]:
@@ -234,9 +239,10 @@ def test_batch_status_failed_when_runner_error() -> None:
             headers={"Idempotency-Key": "idem-failure-1"},
         )
 
-    assert response.status_code == 202
-    job_id = response.json()["job_id"]
-    status_payload = _wait_for_status(job_id, {"failed"})
+        assert response.status_code == 202
+        job_id = response.json()["job_id"]
+        status_payload = _wait_for_status(job_id, {"failed"})
+
     assert status_payload["progress"]["total"] == 1
     assert status_payload["progress"]["success"] == 0
     assert status_payload["progress"]["failed"] == 1

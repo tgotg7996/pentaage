@@ -1,0 +1,1 @@
+/Users/tgotg/miniconda3/bin/postgres "-D" "infra/local/postgres" "-p" "5432"

@@ -29,4 +29,5 @@ export interface CompoundAnalyzeResponse {
   fingerprint_params: Record<string, unknown>;
   cached: boolean;
   calc_id: string;
+  processing_time_ms?: number;
 }

@@ -7,12 +7,14 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass
-from typing import Callable, cast
+from typing import Callable, Optional, cast
 
 from ..schemas.batch import BatchProgress, BatchStatusResponse, BatchSubmitResponse
 
 
 BatchAnalyzeRunner = Callable[[list[str]], list[dict[str, str]]]
+WorkerEnqueue = Callable[[list[str]], str]
+WorkerResultGetter = Callable[[str], Optional[dict[str, object]]]
 
 
 @dataclass
@@ -24,6 +26,7 @@ class BatchJobRecord:
     success_count: int
     failed_count: int
     download_content: bytes | None
+    worker_task_id: str | None
 
 
 _BATCH_JOBS: dict[str, BatchJobRecord] = {}
@@ -71,6 +74,94 @@ def _get_batch_analyze_runner() -> BatchAnalyzeRunner:
     return cast(BatchAnalyzeRunner, runner)
 
 
+def _get_batch_worker_bridge() -> Optional[tuple[WorkerEnqueue, WorkerResultGetter]]:
+    try:
+        module = importlib.import_module("worker.tasks.batch_analyze")
+    except ModuleNotFoundError:
+        return None
+
+    enqueue = getattr(module, "enqueue_batch_analyze", None)
+    get_result = getattr(module, "get_batch_task_result", None)
+    if not callable(enqueue) or not callable(get_result):
+        return None
+    return cast(WorkerEnqueue, enqueue), cast(WorkerResultGetter, get_result)
+
+
+def _build_download_from_results(analyze_results: list[dict[str, str]]) -> bytes:
+    output_lines = ["smiles,status"]
+    for item in analyze_results:
+        smiles = str(item.get("smiles", "")).strip()
+        status = str(item.get("status", "failed")).strip() or "failed"
+        output_lines.append(f"{smiles},{status}")
+    return ("\n".join(output_lines) + "\n").encode("utf-8")
+
+
+def _apply_terminal_result(job_id: str, analyze_results: list[dict[str, str]]) -> None:
+    success_count = sum(1 for item in analyze_results if item.get("status") == "completed")
+    failed_count = max(len(analyze_results) - success_count, 0)
+    download_content = _build_download_from_results(analyze_results)
+
+    with _BATCH_LOCK:
+        record = _BATCH_JOBS.get(job_id)
+        if record is None or record.status != "running":
+            return
+        record.download_content = download_content
+        record.success_count = success_count
+        record.failed_count = failed_count
+        record.status = "completed"
+
+
+def _apply_failed_result(job_id: str) -> None:
+    with _BATCH_LOCK:
+        record = _BATCH_JOBS.get(job_id)
+        if record is None or record.status != "running":
+            return
+        record.success_count = 0
+        record.failed_count = record.total_count
+        record.status = "failed"
+
+
+def _run_job_via_worker(job_id: str, data_rows: list[str]) -> bool:
+    bridge = _get_batch_worker_bridge()
+    if bridge is None:
+        return False
+
+    enqueue, get_result = bridge
+    worker_task_id = enqueue(data_rows)
+    with _BATCH_LOCK:
+        record = _BATCH_JOBS.get(job_id)
+        if record is None or record.status != "running":
+            return True
+        record.worker_task_id = worker_task_id
+
+    for _ in range(300):
+        task_result = get_result(worker_task_id)
+        if task_result is None:
+            time.sleep(0.01)
+            continue
+
+        state = str(task_result.get("state", "PENDING")).upper()
+        if state in {"PENDING", "RUNNING"}:
+            time.sleep(0.01)
+            continue
+
+        if state == "SUCCESS":
+            raw_results = task_result.get("result", [])
+            if isinstance(raw_results, list):
+                analyze_results = [item for item in raw_results if isinstance(item, dict)]
+                normalized = [cast(dict[str, str], item) for item in analyze_results]
+                _apply_terminal_result(job_id, normalized)
+            else:
+                _apply_failed_result(job_id)
+            return True
+
+        _apply_failed_result(job_id)
+        return True
+
+    _apply_failed_result(job_id)
+    return True
+
+
 def _run_job_async(job_id: str) -> None:
     with _BATCH_LOCK:
         record = _BATCH_JOBS.get(job_id)
@@ -88,34 +179,19 @@ def _run_job_async(job_id: str) -> None:
 
     try:
         data_rows = _extract_data_rows(csv_text)
-        analyze_results = _get_batch_analyze_runner()(data_rows)
-        success_count = sum(1 for item in analyze_results if item.get("status") == "completed")
-        failed_count = max(len(analyze_results) - success_count, 0)
-
-        output_lines = ["smiles,status"]
-        for item in analyze_results:
-            smiles = str(item.get("smiles", "")).strip()
-            status = str(item.get("status", "failed")).strip() or "failed"
-            output_lines.append(f"{smiles},{status}")
-        download_content = ("\n".join(output_lines) + "\n").encode("utf-8")
     except Exception:
-        with _BATCH_LOCK:
-            record = _BATCH_JOBS.get(job_id)
-            if record is None or record.status != "running":
-                return
-            record.success_count = 0
-            record.failed_count = record.total_count
-            record.status = "failed"
+        _apply_failed_result(job_id)
         return
 
-    with _BATCH_LOCK:
-        record = _BATCH_JOBS.get(job_id)
-        if record is None or record.status != "running":
+    try:
+        if _run_job_via_worker(job_id, data_rows):
             return
-        record.download_content = download_content
-        record.success_count = success_count
-        record.failed_count = failed_count
-        record.status = "completed"
+        analyze_results = _get_batch_analyze_runner()(data_rows)
+    except Exception:
+        _apply_failed_result(job_id)
+        return
+
+    _apply_terminal_result(job_id, analyze_results)
 
 
 def submit_batch(
@@ -159,6 +235,7 @@ def submit_batch(
             success_count=0,
             failed_count=0,
             download_content=None,
+            worker_task_id=None,
         )
 
         if idempotency_key:

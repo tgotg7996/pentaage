@@ -1,14 +1,19 @@
 from pathlib import Path
+import importlib
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from fastapi.testclient import TestClient
-
 from app.main import app
 
 
-client = TestClient(app)
+def _create_test_client():
+    module = importlib.import_module("fastapi.testclient")
+    test_client_cls = getattr(module, "TestClient")
+    return test_client_cls(app)
+
+
+client = _create_test_client()
 
 
 def test_health_success() -> None:

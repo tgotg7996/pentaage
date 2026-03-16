@@ -1,0 +1,124 @@
+2026-02-27 01:07:28.154 CST [27022] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-02-27 01:07:28.155 CST [27022] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-02-27 01:07:28.155 CST [27022] LOG:  listening on IPv6 address "::1", port 5432
+2026-02-27 01:07:28.155 CST [27022] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-02-27 01:07:28.156 CST [27025] LOG:  database system was shut down at 2026-02-27 01:07:28 CST
+2026-02-27 01:07:28.158 CST [27022] LOG:  database system is ready to accept connections
+2026-02-27 01:07:29.316 CST [27034] FATAL:  role "tgotg" does not exist
+2026-02-27 01:07:35.314 CST [27062] ERROR:  syntax error at or near "27060" at character 4
+2026-02-27 01:07:35.314 CST [27062] STATEMENT:  DO 27060 BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'pentaage') THEN CREATE ROLE pentaage LOGIN PASSWORD 'pentaage'; END IF; END 27060;
+2026-02-27 01:07:35.323 CST [27063] ERROR:  role "pentaage" does not exist
+2026-02-27 01:07:35.323 CST [27063] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-02-27 01:07:45.595 CST [27092] ERROR:  syntax error at or near "pentaage" at character 37
+2026-02-27 01:07:45.595 CST [27092] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD pentaage;
+2026-02-27 01:07:45.605 CST [27094] ERROR:  role "pentaage" does not exist
+2026-02-27 01:07:45.605 CST [27094] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-02-27 01:09:00.775 CST [27022] LOG:  received fast shutdown request
+2026-02-27 01:09:00.776 CST [27022] LOG:  aborting any active transactions
+2026-02-27 01:09:00.777 CST [27022] LOG:  background worker "logical replication launcher" (PID 27028) exited with exit code 1
+2026-02-27 01:09:00.777 CST [27023] LOG:  shutting down
+2026-02-27 01:09:00.777 CST [27023] LOG:  checkpoint starting: shutdown immediate
+2026-02-27 01:09:00.834 CST [27023] LOG:  checkpoint complete: wrote 931 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.037 s, sync=0.020 s, total=0.057 s; sync files=326, longest=0.001 s, average=0.001 s; distance=4200 kB, estimate=4200 kB; lsn=0/18BC568, redo lsn=0/18BC568
+2026-02-27 01:09:00.836 CST [27022] LOG:  database system is shut down
+2026-02-27 01:09:00.947 CST [27477] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-02-27 01:09:00.949 CST [27477] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-02-27 01:09:00.949 CST [27477] LOG:  listening on IPv6 address "::1", port 5432
+2026-02-27 01:09:00.949 CST [27477] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-02-27 01:09:00.950 CST [27480] LOG:  database system was shut down at 2026-02-27 01:09:00 CST
+2026-02-27 01:09:00.953 CST [27477] LOG:  database system is ready to accept connections
+2026-02-27 01:09:01.104 CST [27486] ERROR:  role "pentaage" already exists
+2026-02-27 01:09:01.104 CST [27486] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-02-27 01:09:01.115 CST [27490] ERROR:  database "pentaage" already exists
+2026-02-27 01:09:01.115 CST [27490] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-02-27 01:14:00.956 CST [27478] LOG:  checkpoint starting: time
+2026-02-27 01:14:05.954 CST [27478] LOG:  checkpoint complete: wrote 52 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.989 s, sync=0.006 s, total=4.998 s; sync files=16, longest=0.001 s, average=0.001 s; distance=275 kB, estimate=275 kB; lsn=0/19012F8, redo lsn=0/19012C0
+2026-02-27 15:33:09.904 CST [27477] LOG:  received smart shutdown request
+2026-02-27 15:33:09.910 CST [27477] LOG:  background worker "logical replication launcher" (PID 27483) exited with exit code 1
+2026-02-27 15:33:09.911 CST [27478] LOG:  shutting down
+2026-02-27 15:33:09.913 CST [27478] LOG:  checkpoint starting: shutdown immediate
+2026-02-27 15:33:09.922 CST [27478] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.011 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=247 kB; lsn=0/19013A8, redo lsn=0/19013A8
+2026-02-27 15:33:09.929 CST [27477] LOG:  database system is shut down
+2026-03-05 12:17:11.720 CST [50860] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-05 12:17:11.742 CST [50860] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-05 12:17:11.742 CST [50860] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-05 12:17:11.742 CST [50860] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-05 12:17:11.748 CST [50863] LOG:  database system was shut down at 2026-02-27 15:33:09 CST
+2026-03-05 12:17:11.757 CST [50860] LOG:  database system is ready to accept connections
+2026-03-05 12:17:13.150 CST [50871] FATAL:  role "tgotg" does not exist
+2026-03-05 12:17:13.218 CST [50878] ERROR:  role "pentaage" already exists
+2026-03-05 12:17:13.218 CST [50878] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-05 12:17:13.237 CST [50880] ERROR:  database "pentaage" already exists
+2026-03-05 12:17:13.237 CST [50880] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-03-05 12:19:42.474 CST [50860] LOG:  received fast shutdown request
+2026-03-05 12:19:42.475 CST [50860] LOG:  aborting any active transactions
+2026-03-05 12:19:42.476 CST [50860] LOG:  background worker "logical replication launcher" (PID 50866) exited with exit code 1
+2026-03-05 12:19:42.476 CST [50861] LOG:  shutting down
+2026-03-05 12:19:42.477 CST [50861] LOG:  checkpoint starting: shutdown immediate
+2026-03-05 12:19:42.512 CST [50861] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.036 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1901458, redo lsn=0/1901458
+2026-03-05 12:19:42.515 CST [50860] LOG:  database system is shut down
+2026-03-05 12:19:42.657 CST [51280] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-05 12:19:42.661 CST [51280] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-05 12:19:42.661 CST [51280] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-05 12:19:42.661 CST [51280] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-05 12:19:42.663 CST [51283] LOG:  database system was shut down at 2026-03-05 12:19:42 CST
+2026-03-05 12:19:42.666 CST [51280] LOG:  database system is ready to accept connections
+2026-03-05 12:19:43.845 CST [51297] FATAL:  role "tgotg" does not exist
+2026-03-05 12:19:43.880 CST [51300] ERROR:  role "pentaage" already exists
+2026-03-05 12:19:43.880 CST [51300] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-05 12:19:43.893 CST [51302] ERROR:  database "pentaage" already exists
+2026-03-05 12:19:43.893 CST [51302] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-03-05 12:22:29.122 CST [51280] LOG:  received fast shutdown request
+2026-03-05 12:22:29.125 CST [51280] LOG:  aborting any active transactions
+2026-03-05 12:22:29.126 CST [51280] LOG:  background worker "logical replication launcher" (PID 51286) exited with exit code 1
+2026-03-05 12:22:29.127 CST [51281] LOG:  shutting down
+2026-03-05 12:22:29.127 CST [51281] LOG:  checkpoint starting: shutdown immediate
+2026-03-05 12:22:29.131 CST [51281] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1901508, redo lsn=0/1901508
+2026-03-05 12:22:29.133 CST [51280] LOG:  database system is shut down
+2026-03-09 11:10:31.197 CST [89773] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-09 11:10:31.200 CST [89773] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-09 11:10:31.200 CST [89773] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-09 11:10:31.200 CST [89773] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-09 11:10:31.203 CST [89776] LOG:  database system was shut down at 2026-03-05 12:22:29 CST
+2026-03-09 11:10:31.208 CST [89773] LOG:  database system is ready to accept connections
+2026-03-09 11:10:32.393 CST [89783] FATAL:  role "tgotg" does not exist
+2026-03-09 11:10:32.425 CST [89790] ERROR:  role "pentaage" already exists
+2026-03-09 11:10:32.425 CST [89790] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-09 11:10:32.434 CST [89792] ERROR:  database "pentaage" already exists
+2026-03-09 11:10:32.434 CST [89792] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-03-09 11:15:31.211 CST [89774] LOG:  checkpoint starting: time
+2026-03-09 11:15:31.367 CST [89774] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.157 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/19015F0, redo lsn=0/19015B8
+2026-03-15 20:28:11.402 CST [98880] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-15 20:28:11.406 CST [98880] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-15 20:28:11.406 CST [98880] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-15 20:28:11.406 CST [98880] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-15 20:28:11.411 CST [98883] LOG:  database system was interrupted; last known up at 2026-03-09 11:15:31 CST
+2026-03-15 20:28:11.460 CST [98883] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-03-15 20:28:11.463 CST [98883] LOG:  redo starts at 0/19015B8
+2026-03-15 20:28:11.463 CST [98883] LOG:  invalid record length at 0/19016A0: expected at least 24, got 0
+2026-03-15 20:28:11.463 CST [98883] LOG:  redo done at 0/1901668 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-03-15 20:28:11.464 CST [98881] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-03-15 20:28:11.519 CST [98881] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.056 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/19016A0, redo lsn=0/19016A0
+2026-03-15 20:28:11.521 CST [98880] LOG:  database system is ready to accept connections
+2026-03-15 20:28:12.689 CST [98892] FATAL:  role "tgotg" does not exist
+2026-03-15 20:28:12.723 CST [98895] ERROR:  role "pentaage" already exists
+2026-03-15 20:28:12.723 CST [98895] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-15 20:28:12.732 CST [98897] ERROR:  database "pentaage" already exists
+2026-03-15 20:28:12.732 CST [98897] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-03-15 20:29:44.726 CST [98880] LOG:  received fast shutdown request
+2026-03-15 20:29:44.726 CST [98880] LOG:  aborting any active transactions
+2026-03-15 20:29:44.727 CST [98880] LOG:  background worker "logical replication launcher" (PID 98886) exited with exit code 1
+2026-03-15 20:29:44.728 CST [98881] LOG:  shutting down
+2026-03-15 20:29:44.729 CST [98881] LOG:  checkpoint starting: shutdown immediate
+2026-03-15 20:29:44.731 CST [98881] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1901750, redo lsn=0/1901750
+2026-03-15 20:29:44.732 CST [98880] LOG:  database system is shut down
+2026-03-16 10:47:06.639 CST [7491] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-16 10:47:06.641 CST [7491] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-16 10:47:06.641 CST [7491] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-16 10:47:06.641 CST [7491] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-16 10:47:06.646 CST [7494] LOG:  database system was shut down at 2026-03-15 20:29:44 CST
+2026-03-16 10:47:06.656 CST [7491] LOG:  database system is ready to accept connections
+2026-03-16 10:47:07.826 CST [7503] FATAL:  role "tgotg" does not exist
+2026-03-16 10:47:07.862 CST [7506] ERROR:  role "pentaage" already exists
+2026-03-16 10:47:07.862 CST [7506] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-16 10:47:07.872 CST [7508] ERROR:  database "pentaage" already exists
+2026-03-16 10:47:07.872 CST [7508] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;

@@ -4,7 +4,7 @@
 
 | 项目     | 内容                                                  |
 | :------- | :---------------------------------------------------- |
-| 文档版本 | v3.1（多Agent协同执行版，含ULW流程）                 |
+| 文档版本 | v3.1（多Agent协同执行版，含ULW流程）                  |
 | 更新日期 | 2026-02-19                                            |
 | 项目名称 | PentaAge - 五单体抗衰老药物预测平台                   |
 | 适用阶段 | MVP（8周）+ 可扩展到v1.0                              |
@@ -1329,19 +1329,24 @@ deliverables:
 
 ---
 
-## 21. 当前执行状态（2026-02-19）
+## 21. 当前执行状态（2026-02-23）
 
 1. `PA-001` 已完成：目录骨架、`Makefile`、`.env.example`、`docker-compose.dev.yml`、`README` 已就位。
 2. `PA-002` 已完成：`backend/tests/fixtures/reference_compounds.json` 已提供5条基准数据；`infra/scripts/seed-reference.py` 支持按 `cas` 幂等导入。
 3. `PA-003` 已完成：6张核心表模型与 `backend/alembic/versions/001_initial.py` 已落地。
 4. `PA-004` 已完成：`backend/app/schemas/*.py` 与 `frontend/src/types/*.ts` 已按契约同步。
-5. `PA-005` 进行中：`/compounds/analyze` 已具备请求校验、相似度计算、评分与统一响应；仍需补齐真实FastAPI路由与数据库持久化。
+5. `PA-005` 已完成：`/compounds/analyze` 已接入真实FastAPI路由与服务层，支持缓存命中、错误码返回、`compound_results` 持久化、`calc_id` 去重与冲突回滚，并具备集成测试覆盖。
+6. `PA-006` 已完成：`fingerprint.py` 使用 Morgan 指纹参数（`radius=2`, `n_bits=2048`），`similarity.py` 与 `scoring.py` 满足公式契约；验证集 Top-1 命中率已达标，核心模块单测覆盖达 100%。
+7. `PA-013` 已完成：批量任务已从服务内直接计算升级为 `worker.tasks.batch_analyze` 异步编排与结果回写路径，`batch_service` 支持 worker 任务桥接、状态轮询与失败回写，相关单测与集成测试已覆盖。
+8. `PA-011` 已完成：方子解析算法已对齐约束（成分上限50、协同加分 `min(2 * components_count, 10)`、`EMPTY_INGREDIENTS/ALL_UNRESOLVED` 错误路径），并由单测与集成测试验证。
+9. `PA-012` 已完成：`/formulas/analyze` 已接入数据库依赖并落地 `formula_results` 与 `formula_components` 持久化写入，接口与错误路径由集成测试覆盖。
+10. `PA-014` 已完成：本地环境已补齐 PostgreSQL/Redis/ripgrep 与 live 回归依赖，`make test-regression-live` 在真实服务上通过。
 
 ### 21.1 下一步优先级
 
-1. 完成 `PA-005` 剩余项：将当前函数式入口替换为真实FastAPI路由并接入持久化。
-2. 并行推进 `PA-006`：将轻量指纹实现切换为RDKit实现，并补验证集准确率测试。
-3. 启动 `PA-014`：建立回归测试框架，覆盖 `INVALID_SMILES` 与缓存命中路径。
+1. 推进 `PA-015`：补齐健康检查组件状态与监控基础能力。
+2. 继续完善环境即代码：将本地 infra 启停与 `.env` 配置固化到团队开发手册。
+3. 规划下一阶段稳定性工作：把 live 回归接入 CI 执行路径。
 
 ### 21.2 交接入口
 
