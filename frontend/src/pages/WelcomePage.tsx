@@ -149,11 +149,11 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
 
       image.onload = () => {
         // Draw image to sample pixels
-        const scale = isMobile ? 0.35 : 0.5; // Scale logo appropriately
+        const scale = isMobile ? 0.6 : 0.85; // Increased scale significantly as requested
         const scaledWidth = image.width * scale;
         const scaledHeight = image.height * scale;
         const offsetX = (canvas.width - scaledWidth) / 2;
-        const offsetY = (canvas.height - scaledHeight) / 2 - 50; // shift up slightly
+        const offsetY = (canvas.height - scaledHeight) / 2 - 80; // shift up a bit more to accommodate larger size
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
@@ -163,7 +163,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
 
         particles = [];
         // Extract pixels
-        const gap = isMobile ? 4 : 3; // Particle spacing
+        const gap = isMobile ? 4 : 4; // Keep particle density visually similar
         for (let y = 0; y < canvas.height; y += gap) {
           for (let x = 0; x < canvas.width; x += gap) {
             const index = (y * canvas.width + x) * 4;
@@ -174,6 +174,9 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
               const r = imageData.data[index];
               const g = imageData.data[index + 1];
               const b = imageData.data[index + 2];
+              
+              // CRITICAL: Filter out the near-white background pixels that form the faint box block in the PNG
+              if (r > 240 && g > 240 && b > 240) continue;
 
               // Start from random edge of screen
               let startX, startY;
