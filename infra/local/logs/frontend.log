@@ -8,3 +8,7 @@
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://10.224.93.204:5173/
   ➜  Network: http://198.18.0.1:5173/
+10:52:44 AM [vite] hmr update /src/pages/WelcomePage.tsx
+10:52:46 AM [vite] hmr update /src/pages/WelcomePage.tsx
+10:57:17 AM [vite] hmr update /src/pages/WelcomePage.tsx
+11:04:20 AM [vite] hmr update /src/pages/WelcomePage.tsx
