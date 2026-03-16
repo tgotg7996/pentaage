@@ -11,6 +11,7 @@ class Particle {
   targetX: number;
   targetY: number;
   size: number;
+  baseColor: { r: number; g: number; b: number; a: number };
   color: string;
   vx: number;
   vy: number;
@@ -18,8 +19,11 @@ class Particle {
   baseY: number;
   density: number;
   isExploding: boolean;
+  angle: number;
+  velocity: number;
+  randomDriftOffset: number;
 
-  constructor(x: number, y: number, targetX: number, targetY: number, color: string, isMobile: boolean) {
+  constructor(x: number, y: number, targetX: number, targetY: number, r: number, g: number, b: number, a: number, isMobile: boolean) {
     this.x = x;
     this.y = y;
     this.targetX = targetX;
@@ -27,12 +31,19 @@ class Particle {
     this.baseX = targetX;
     this.baseY = targetY;
     // Mobile particles are slightly larger for better viewing
-    this.size = (Math.random() * 1.5 + 1) * (isMobile ? 1.5 : 1); 
-    this.color = color;
+    this.size = (Math.random() * 1.5 + 0.8) * (isMobile ? 1.5 : 1); 
+    this.baseColor = { r, g, b, a };
+    this.color = `rgba(${r}, ${g}, ${b}, ${a})`;
     this.vx = 0;
     this.vy = 0;
-    this.density = Math.random() * 30 + 10;
+    // Density determines how resistant to mouse forces they are
+    this.density = Math.random() * 40 + 20;
     this.isExploding = false;
+    
+    // For organic drift animation
+    this.angle = Math.random() * Math.PI * 2;
+    this.velocity = Math.random() * 0.015 + 0.005; // Slow flow
+    this.randomDriftOffset = Math.random() * 3 + 1; // Range of drifting (1-4px)
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -61,29 +72,37 @@ class Particle {
       return;
     }
 
-    // Interactive organic floating/return
+    // Continuous smooth organic drift
+    this.angle += this.velocity;
+    const driftX = Math.cos(this.angle) * this.randomDriftOffset;
+    const driftY = Math.sin(this.angle) * this.randomDriftOffset;
+
+    // Subtle color gradient fluctuation (modulating lightness slightly)
+    const lightnessShift = Math.sin(this.angle) * 20; // max shift of 20
+    this.color = `rgba(${Math.min(255, Math.max(0, this.baseColor.r + lightnessShift))}, ${Math.min(255, Math.max(0, this.baseColor.g + lightnessShift))}, ${Math.min(255, Math.max(0, this.baseColor.b + lightnessShift))}, ${this.baseColor.a})`;
+
+    // Interactive mouse repulsion
     const dx = mouse.x - this.x;
     const dy = mouse.y - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const forceDirectionX = dx / distance;
-    const forceDirectionY = dy / distance;
-    const maxDistance = mouse.radius;
-    const force = (maxDistance - distance) / maxDistance;
-    const directionX = forceDirectionX * force * this.density;
-    const directionY = forceDirectionY * force * this.density;
 
     if (distance < mouse.radius) {
+      const forceDirectionX = dx / distance;
+      const forceDirectionY = dy / distance;
+      // Soften the force curve
+      const force = (mouse.radius - distance) / mouse.radius;
+      // Reduce the density multiplier for gentler repulsion, so they don't fly off too far
+      const directionX = forceDirectionX * force * (this.density * 0.3);
+      const directionY = forceDirectionY * force * (this.density * 0.3);
       this.x -= directionX;
       this.y -= directionY;
     } else {
-      if (this.x !== this.baseX) {
-        let dx = this.x - this.baseX;
-        this.x -= dx / 15; // Return speed constraint
-      }
-      if (this.y !== this.baseY) {
-        let dy = this.y - this.baseY;
-        this.y -= dy / 15;
-      }
+      // Soft return to base target + continuous fluid drift
+      const targetFlowX = this.baseX + driftX;
+      const targetFlowY = this.baseY + driftY;
+      
+      this.x += (targetFlowX - this.x) * 0.05; // 0.05 is the return spring factor
+      this.y += (targetFlowY - this.y) * 0.05;
     }
   }
 }
@@ -102,7 +121,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
     let particles: Particle[] = [];
     let animationFrameId: number;
 
-    const mouse = { x: -9999, y: -9999, radius: 80 };
+    const mouse = { x: -9999, y: -9999, radius: 45 }; // Reduced disturbance radius
 
     const handleMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
@@ -155,7 +174,6 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
               const r = imageData.data[index];
               const g = imageData.data[index + 1];
               const b = imageData.data[index + 2];
-              const color = `rgba(${r}, ${g}, ${b}, ${alpha / 255})`;
 
               // Start from random edge of screen
               let startX, startY;
@@ -165,7 +183,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
               else if (edge === 2) { startX = Math.random() * canvas.width; startY = canvas.height + 50; }
               else { startX = -50; startY = Math.random() * canvas.height; }
 
-              particles.push(new Particle(startX, startY, x, y, color, isMobile));
+              particles.push(new Particle(startX, startY, x, y, r, g, b, alpha / 255, isMobile));
             }
           }
         }

@@ -78,3 +78,6 @@
       at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:273:13
       at async.call.result.err.err (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:223:11)
 11:08:39 AM [vite] hmr update /src/pages/WelcomePage.tsx
+11:12:09 AM [vite] hmr update /src/pages/WelcomePage.tsx
+11:12:10 AM [vite] hmr update /src/pages/WelcomePage.tsx
+11:12:17 AM [vite] hmr update /src/pages/WelcomePage.tsx
