@@ -149,11 +149,11 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
 
       image.onload = () => {
         // Draw image to sample pixels
-        const scale = isMobile ? 0.6 : 0.85; // Increased scale significantly as requested
+        const scale = isMobile ? 0.8 : 1.35; // Increased scale significantly for an even larger logo
         const scaledWidth = image.width * scale;
         const scaledHeight = image.height * scale;
         const offsetX = (canvas.width - scaledWidth) / 2;
-        const offsetY = (canvas.height - scaledHeight) / 2 - 80; // shift up a bit more to accommodate larger size
+        const offsetY = (canvas.height - scaledHeight) / 2 - 100; // shift up more because it's bigger
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
@@ -163,7 +163,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
 
         particles = [];
         // Extract pixels
-        const gap = isMobile ? 4 : 4; // Keep particle density visually similar
+        const gap = isMobile ? 3 : 3; // Slightly increased gap so performance doesn't tank with the massive scale
         for (let y = 0; y < canvas.height; y += gap) {
           for (let x = 0; x < canvas.width; x += gap) {
             const index = (y * canvas.width + x) * 4;
