@@ -26,6 +26,10 @@ export default function FormulaAnalysis() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<FormulaAnalyzeResponse | null>(null);
 
+  const formulaMaxScore = result
+    ? result.component_scores.length * 60 + Math.min(2 * result.component_scores.length, 10)
+    : 100;
+
   const handleAddIngredient = () => {
     setIngredients([...ingredients, { id: nextId, name: "", weight: "" }]);
     setNextId(nextId + 1);
@@ -212,7 +216,7 @@ export default function FormulaAnalysis() {
               )}
 
               <div className="card" style={{ display: "flex", gap: "var(--space-xl)", alignItems: "center" }}>
-                <ScoreCircle score={result.total_score} label="总体推荐分" />
+                <ScoreCircle score={result.total_score} maxScore={formulaMaxScore} label="总体推荐分" />
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--space-sm)" }}>
                     <span className="label" style={{ marginBottom: 0 }}>成分评分条目数：</span>

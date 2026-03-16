@@ -2,84 +2,18 @@
 > pentaage-frontend@0.1.0 dev
 > vite --host 0.0.0.0 --port 5173
 
+Re-optimizing dependencies because lockfile has changed
 
-  VITE v5.4.21  ready in 148 ms
+  VITE v5.4.21  ready in 129 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: http://10.224.93.204:5173/
   ➜  Network: http://198.18.0.1:5173/
-10:52:44 AM [vite] hmr update /src/pages/WelcomePage.tsx
-10:52:46 AM [vite] hmr update /src/pages/WelcomePage.tsx
-10:57:17 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:04:20 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:08:08 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:08:08 AM [vite] Internal server error: /Users/tgotg/Desktop/中医小程序/frontend/src/pages/WelcomePage.tsx: 'import' and 'export' may only appear at the top level. (8:0)
-
-   6 |
-   7 | export default function WelcomePage({ onEnter }: WelcomePageProps) {
->  8 | import { useEffect, useRef, useState } from "react";
-     | ^
-   9 | import { motion, AnimatePresence } from "framer-motion";
-  10 |
-  11 | interface WelcomePageProps {
-  Plugin: vite:react-babel
-  File: /Users/tgotg/Desktop/中医小程序/frontend/src/pages/WelcomePage.tsx:8:0
-  6  |  
-  7  |  export default function WelcomePage({ onEnter }: WelcomePageProps) {
-  8  |  import { useEffect, useRef, useState } from "react";
-     |  ^
-  9  |  import { motion, AnimatePresence } from "framer-motion";
-  10 |  
-      at constructor (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:365:19)
-      at TypeScriptParserMixin.raise (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:6599:19)
-      at TypeScriptParserMixin.parseStatementContent (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12871:18)
-      at TypeScriptParserMixin.parseStatementContent (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:9508:18)
-      at TypeScriptParserMixin.parseStatementLike (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12767:17)
-      at TypeScriptParserMixin.parseStatementListItem (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12747:17)
-      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13316:61)
-      at TypeScriptParserMixin.parseBlockBody (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13309:10)
-      at TypeScriptParserMixin.parseBlock (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13297:10)
-      at TypeScriptParserMixin.parseFunctionBody (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12100:24)
-      at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12086:10)
-      at TypeScriptParserMixin.parseFunctionBodyAndFinish (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:9172:18)
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13445:12
-      at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12403:14)
-      at TypeScriptParserMixin.parseFunction (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13444:10)
-      at TypeScriptParserMixin.parseExportDefaultExpression (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13907:19)
-      at TypeScriptParserMixin.parseExportDefaultExpression (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:9402:18)
-      at TypeScriptParserMixin.parseExport (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13828:25)
-      at TypeScriptParserMixin.parseExport (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:9385:20)
-      at TypeScriptParserMixin.parseStatementContent (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12878:27)
-      at TypeScriptParserMixin.parseStatementContent (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:9508:18)
-      at TypeScriptParserMixin.parseStatementLike (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12767:17)
-      at TypeScriptParserMixin.parseModuleItem (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12744:17)
-      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13316:36)
-      at TypeScriptParserMixin.parseBlockBody (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:13309:10)
-      at TypeScriptParserMixin.parseProgram (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12622:10)
-      at TypeScriptParserMixin.parseTopLevel (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:12612:25)
-      at TypeScriptParserMixin.parse (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:14488:25)
-      at TypeScriptParserMixin.parse (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:10126:18)
-      at parse (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/parser/lib/index.js:14522:38)
-      at parser (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/core/lib/parser/index.js:41:34)
-      at parser.next (<anonymous>)
-      at normalizeFile (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/core/lib/transformation/normalize-file.js:64:37)
-      at normalizeFile.next (<anonymous>)
-      at run (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/core/lib/transformation/index.js:22:50)
-      at run.next (<anonymous>)
-      at transform (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/core/lib/transform.js:22:33)
-      at transform.next (<anonymous>)
-      at step (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:261:32)
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:273:13
-      at async.call.result.err.err (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:223:11)
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:189:28
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/@babel/core/lib/gensync-utils/async.js:67:7
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:113:33
-      at step (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:287:14)
-      at /Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:273:13
-      at async.call.result.err.err (/Users/tgotg/Desktop/中医小程序/frontend/node_modules/gensync/index.js:223:11)
-11:08:39 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:12:09 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:12:10 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:12:17 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:15:28 AM [vite] hmr update /src/pages/WelcomePage.tsx
-11:17:51 AM [vite] hmr update /src/pages/WelcomePage.tsx
+5:10:23 PM [vite] hmr update /src/styles/welcome.css
+5:10:44 PM [vite] hmr update /src/pages/WelcomePage.tsx
+5:11:03 PM [vite] hmr update /src/pages/WelcomePage.tsx
+5:11:10 PM [vite] hmr update /src/styles/welcome.css
+5:11:12 PM [vite] hmr update /src/styles/welcome.css
+5:15:24 PM [vite] hmr update /src/styles/welcome.css
+5:24:15 PM [vite] hmr update /src/components/ScoreCircle.tsx
+5:24:30 PM [vite] hmr update /src/pages/FormulaAnalysis.tsx

@@ -1,8 +1,67 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import "../styles/welcome.css";
 
 interface WelcomePageProps {
   onEnter: () => void;
+}
+
+class AmbientParticle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  color: string;
+
+  constructor(width: number, height: number) {
+    this.x = Math.random() * width;
+    this.y = Math.random() * height;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.size = Math.random() * 2 + 1;
+    this.alpha = Math.random() * 0.4 + 0.1;
+    this.color = `rgba(107, 192, 109, ${this.alpha})`;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = "rgba(107, 192, 109, 0.5)";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  update(mouse: { x: number; y: number; radius: number }, width: number, height: number, isExploding: boolean) {
+    if (isExploding) {
+      this.x += this.vx * 5;
+      this.y += this.vy * 5;
+      this.alpha *= 0.96;
+      this.color = `rgba(107, 192, 109, ${this.alpha})`;
+      return;
+    }
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x < 0) this.x = width;
+    if (this.x > width) this.x = 0;
+    if (this.y < 0) this.y = height;
+    if (this.y > height) this.y = 0;
+
+    const dx = mouse.x - this.x;
+    const dy = mouse.y - this.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < 150) {
+      const force = (150 - distance) / 150;
+      this.x -= dx * force * 0.02;
+      this.y -= dy * force * 0.02;
+    }
+  }
 }
 
 class Particle {
@@ -119,6 +178,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
     if (!ctx) return;
 
     let particles: Particle[] = [];
+    let ambientParticles: AmbientParticle[] = [];
     let animationFrameId: number;
 
     const mouse = { x: -9999, y: -9999, radius: 45 }; // Reduced disturbance radius
@@ -144,16 +204,23 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
+      // Init ambient particles
+      ambientParticles = [];
+      const ambientCount = isMobile ? 40 : 100;
+      for (let i = 0; i < ambientCount; i++) {
+        ambientParticles.push(new AmbientParticle(canvas.width, canvas.height));
+      }
+
       const image = new Image();
       image.src = "/logo.png"; // Load the actual logo
 
       image.onload = () => {
         // Draw image to sample pixels
-        const scale = isMobile ? 0.8 : 1.35; // Increased scale significantly for an even larger logo
+        const scale = isMobile ? 0.8 : 1.2; // Slightly reduced scale for better balance
         const scaledWidth = image.width * scale;
         const scaledHeight = image.height * scale;
         const offsetX = (canvas.width - scaledWidth) / 2;
-        const offsetY = (canvas.height - scaledHeight) / 2 - 100; // shift up more because it's bigger
+        const offsetY = (canvas.height - scaledHeight) / 2 - (isMobile ? 80 : 160); 
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, offsetX, offsetY, scaledWidth, scaledHeight);
@@ -179,7 +246,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
               if (r > 240 && g > 240 && b > 240) continue;
 
               // Start from random edge of screen
-              let startX, startY;
+              let startX: number, startY: number;
               const edge = Math.floor(Math.random() * 4);
               if (edge === 0) { startX = Math.random() * canvas.width; startY = -50; }
               else if (edge === 1) { startX = canvas.width + 50; startY = Math.random() * canvas.height; }
@@ -201,6 +268,31 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
       if(isExploding) {
           ctx.fillStyle = "rgba(107, 192, 109, 0.05)";
           ctx.fillRect(0,0, canvas.width, canvas.height);
+      }
+
+      // Update and draw ambient particles & connections
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < ambientParticles.length; i++) {
+        ambientParticles[i].update(mouse, canvas.width, canvas.height, isExploding);
+        ambientParticles[i].draw(ctx);
+
+        // Connections (Meridian effect) - only draw if not exploding
+        if (!isExploding) {
+          for (let j = i + 1; j < ambientParticles.length; j++) {
+            const dx = ambientParticles[i].x - ambientParticles[j].x;
+            const dy = ambientParticles[i].y - ambientParticles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 120) {
+              const opacity = (1 - dist / 120) * 0.2;
+              ctx.strokeStyle = `rgba(107, 192, 109, ${opacity})`;
+              ctx.beginPath();
+              ctx.moveTo(ambientParticles[i].x, ambientParticles[i].y);
+              ctx.lineTo(ambientParticles[j].x, ambientParticles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
       }
 
       for (let i = 0; i < particles.length; i++) {
@@ -266,8 +358,8 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: particlesLoaded ? 1 : 0 }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 0.8 }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(15px)" }}
+            transition={{ duration: 1 }}
             style={{
               position: "absolute",
               inset: 0,
@@ -276,48 +368,96 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
               alignItems: "center",
               justifyContent: "center",
               zIndex: 10,
-              pointerEvents: "none", // Allow mouse events to reach canvas underneath if needed
+              pointerEvents: "none",
             }}
           >
-            <div style={{ marginTop: "180px", textAlign: "center", pointerEvents: "auto" }}>
-              <h1 style={{ 
-                fontSize: "var(--text-4xl)", 
-                fontWeight: 800, 
-                color: "var(--color-text)", 
-                letterSpacing: "-1.5px", 
-                marginBottom: "var(--space-xs)",
-              }}>
+            <motion.div 
+              style={{ 
+                marginTop: window.innerWidth <= 768 ? "120px" : "240px", 
+                textAlign: "center", 
+                pointerEvents: "auto" 
+              }}
+              className="text-glass-backdrop"
+              variants={{
+                hidden: { opacity: 0, scale: 0.95 },
+                visible: {
+                  opacity: 1,
+                  scale: 1,
+                  transition: { staggerChildren: 0.2, delayChildren: 0.4, duration: 1.2, ease: "easeOut" }
+                }
+              }}
+              initial="hidden"
+              animate={particlesLoaded ? "visible" : "hidden"}
+            >
+              <motion.h1 
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] } }
+                }}
+                className="animated-title"
+                style={{ 
+                  fontSize: window.innerWidth <= 768 ? "3rem" : "5rem", 
+                  fontWeight: 900, 
+                  letterSpacing: "-2px", 
+                  marginBottom: "var(--space-md)",
+                  lineHeight: 1.1,
+                }}
+              >
                 PentaAge
-              </h1>
-              <p style={{ 
-                fontSize: "var(--text-lg)", 
-                color: "var(--color-text-secondary)", 
-                letterSpacing: "6px", 
-                textTransform: "uppercase",
-                opacity: 0.8
-              }}>
-                传统智慧 · 现代计算
-              </p>
+              </motion.h1>
 
-              <button
+              <motion.div 
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] } }
+                }}
+                className="subtitle-container"
+              >
+                <div className="subtitle-line" />
+                <p 
+                  style={{ 
+                    fontSize: window.innerWidth <= 768 ? "0.875rem" : "1.125rem", 
+                    color: "var(--color-text)", 
+                    letterSpacing: "0.5em", 
+                    fontWeight: 500,
+                    opacity: 1,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    textTransform: "uppercase"
+                  }}
+                >
+                  传统智慧 · 现代计算
+                </p>
+                <div className="subtitle-line" />
+              </motion.div>
+
+              <motion.button
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] } }
+                }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  y: -3 
+                }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleEnterClick}
-                className="btn btn-primary"
+                className="premium-button pulse-animation"
                 style={{
-                  marginTop: "var(--space-3xl)",
-                  padding: "var(--space-md) var(--space-2xl)",
-                  fontSize: "var(--text-lg)",
-                  borderRadius: "var(--radius-full)",
-                  background: "var(--color-text)",
-                  color: "var(--color-bg)",
+                  marginTop: "var(--space-2xl)",
+                  padding: "16px 56px",
+                  fontSize: "1.125rem",
+                  borderRadius: "99px",
+                  color: "white",
                   fontWeight: 600,
-                  border: "none",
-                  boxShadow: "0 8px 20px -10px var(--color-text)",
                   cursor: "pointer",
+                  letterSpacing: "5px",
+                  pointerEvents: "auto"
                 }}
               >
                 进入系统
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

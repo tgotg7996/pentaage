@@ -6,14 +6,16 @@ interface ScoreCircleProps {
 }
 
 export default function ScoreCircle({ score, maxScore = 100, size = 120, label }: ScoreCircleProps) {
-  const pct = Math.min(score / maxScore, 1);
+  const safeScore = Number.isFinite(score) ? Math.max(score, 0) : 0;
+  const safeMaxScore = Number.isFinite(maxScore) && maxScore > 0 ? maxScore : 100;
+  const pct = Math.min(safeScore / safeMaxScore, 1);
   const radius = (size - 12) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - pct);
+  const isFullCircle = pct >= 0.999;
+  const strokeLinecap = pct > 0.08 && !isFullCircle ? "round" : "butt";
 
-  // 颜色随分值变化
-  const hue = pct * 120; // 0=红 → 60=黄 → 120=绿
-  const strokeColor = `hsl(${hue}, 60%, 45%)`;
+  const strokeColor = `hsl(${110 + pct * 18}, ${50 + pct * 10}%, ${54 - pct * 8}%)`;
 
   return (
     <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
@@ -25,14 +27,14 @@ export default function ScoreCircle({ score, maxScore = 100, size = 120, label }
         <circle
           cx={size / 2} cy={size / 2} r={radius}
           fill="none" stroke={strokeColor} strokeWidth={6}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
+          strokeLinecap={strokeLinecap}
+          strokeDasharray={isFullCircle ? undefined : circumference}
+          strokeDashoffset={isFullCircle ? undefined : offset}
           style={{ transition: "stroke-dashoffset 0.8s ease" }}
         />
       </svg>
       <div style={{ marginTop: `-${size / 2 + 16}px`, fontSize: "var(--text-2xl)", fontWeight: 700, color: "var(--color-text)" }}>
-        {Math.round(score)}
+        {Math.round(safeScore)}
       </div>
       {label && <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", marginTop: `${size / 2 - 24}px` }}>{label}</div>}
     </div>

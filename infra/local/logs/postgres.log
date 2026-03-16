@@ -124,3 +124,22 @@
 2026-03-16 10:47:07.872 CST [7508] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
 2026-03-16 10:52:06.649 CST [7492] LOG:  checkpoint starting: time
 2026-03-16 10:52:06.666 CST [7492] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.018 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1901838, redo lsn=0/1901800
+2026-03-16 16:42:33.663 CST [7491] LOG:  received smart shutdown request
+2026-03-16 16:42:33.668 CST [7491] LOG:  background worker "logical replication launcher" (PID 7497) exited with exit code 1
+2026-03-16 16:42:33.669 CST [7492] LOG:  shutting down
+2026-03-16 16:42:33.670 CST [7492] LOG:  checkpoint starting: shutdown immediate
+2026-03-16 16:42:33.677 CST [7492] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.009 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/19018E8, redo lsn=0/19018E8
+2026-03-16 16:42:33.684 CST [7491] LOG:  database system is shut down
+2026-03-16 17:04:42.346 CST [9516] LOG:  starting PostgreSQL 16.10 on aarch64-apple-darwin20.0.0, compiled by clang version 19.1.7, 64-bit
+2026-03-16 17:04:42.348 CST [9516] LOG:  listening on IPv6 address "::1", port 5432
+2026-03-16 17:04:42.348 CST [9516] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-03-16 17:04:42.348 CST [9516] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-03-16 17:04:42.349 CST [9519] LOG:  database system was shut down at 2026-03-16 16:42:33 CST
+2026-03-16 17:04:42.352 CST [9516] LOG:  database system is ready to accept connections
+2026-03-16 17:04:43.500 CST [9530] FATAL:  role "tgotg" does not exist
+2026-03-16 17:04:43.527 CST [9537] ERROR:  role "pentaage" already exists
+2026-03-16 17:04:43.527 CST [9537] STATEMENT:  CREATE ROLE pentaage LOGIN PASSWORD 'pentaage';
+2026-03-16 17:04:43.536 CST [9539] ERROR:  database "pentaage" already exists
+2026-03-16 17:04:43.536 CST [9539] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
+2026-03-16 17:09:42.352 CST [9517] LOG:  checkpoint starting: time
+2026-03-16 17:09:42.355 CST [9517] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/19019D0, redo lsn=0/1901998
