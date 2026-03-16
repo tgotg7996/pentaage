@@ -9,34 +9,54 @@ export default function ScoreCircle({ score, maxScore = 100, size = 120, label }
   const safeScore = Number.isFinite(score) ? Math.max(score, 0) : 0;
   const safeMaxScore = Number.isFinite(maxScore) && maxScore > 0 ? maxScore : 100;
   const pct = Math.min(safeScore / safeMaxScore, 1);
-  const radius = (size - 12) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference * (1 - pct);
+  const strokeWidth = 8;
+  const inset = strokeWidth;
   const isFullCircle = pct >= 0.999;
-  const strokeLinecap = pct > 0.08 && !isFullCircle ? "round" : "butt";
+  const progressAngle = isFullCircle ? 360 : pct * 360;
 
   const strokeColor = `hsl(${110 + pct * 18}, ${50 + pct * 10}%, ${54 - pct * 8}%)`;
+  const ringBackground = isFullCircle
+    ? strokeColor
+    : `conic-gradient(from -90deg, ${strokeColor} 0deg ${progressAngle}deg, var(--color-border) ${progressAngle}deg 360deg)`;
 
   return (
     <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="var(--color-border)" strokeWidth={6}
+      <div
+        style={{
+          position: "relative",
+          width: size,
+          height: size,
+          borderRadius: "50%",
+          background: ringBackground,
+          boxShadow: `0 0 0 1px color-mix(in srgb, ${strokeColor} 14%, transparent)`,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset,
+            borderRadius: "50%",
+            background: "var(--color-surface)",
+          }}
         />
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke={strokeColor} strokeWidth={6}
-          strokeLinecap={strokeLinecap}
-          strokeDasharray={isFullCircle ? undefined : circumference}
-          strokeDashoffset={isFullCircle ? undefined : offset}
-          style={{ transition: "stroke-dashoffset 0.8s ease" }}
-        />
-      </svg>
-      <div style={{ marginTop: `-${size / 2 + 16}px`, fontSize: "var(--text-2xl)", fontWeight: 700, color: "var(--color-text)" }}>
-        {Math.round(safeScore)}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "var(--text-2xl)",
+            fontWeight: 700,
+            color: "var(--color-text)",
+          }}
+        >
+          {Math.round(safeScore)}
+        </div>
       </div>
-      {label && <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", marginTop: `${size / 2 - 24}px` }}>{label}</div>}
+      <div style={{ fontSize: "var(--text-sm)", color: "var(--color-text-secondary)", minHeight: "1.5em" }}>
+        {label}
+      </div>
     </div>
   );
 }
