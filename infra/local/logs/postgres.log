@@ -143,3 +143,10 @@
 2026-03-16 17:04:43.536 CST [9539] STATEMENT:  CREATE DATABASE pentaage OWNER pentaage;
 2026-03-16 17:09:42.352 CST [9517] LOG:  checkpoint starting: time
 2026-03-16 17:09:42.355 CST [9517] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/19019D0, redo lsn=0/1901998
+2026-03-16 21:01:14.653 CST [9516] LOG:  received fast shutdown request
+2026-03-16 21:01:14.654 CST [9516] LOG:  aborting any active transactions
+2026-03-16 21:01:14.656 CST [9516] LOG:  background worker "logical replication launcher" (PID 9522) exited with exit code 1
+2026-03-16 21:01:14.656 CST [9517] LOG:  shutting down
+2026-03-16 21:01:14.657 CST [9517] LOG:  checkpoint starting: shutdown immediate
+2026-03-16 21:01:14.661 CST [9517] LOG:  checkpoint complete: wrote 0 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=0, longest=0.000 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1901A80, redo lsn=0/1901A80
+2026-03-16 21:01:14.663 CST [9516] LOG:  database system is shut down
